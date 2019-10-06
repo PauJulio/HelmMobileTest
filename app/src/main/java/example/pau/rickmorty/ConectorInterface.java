@@ -8,11 +8,13 @@ import retrofit2.http.Path;
 
 public interface ConectorInterface {
 
-    @GET("/character")
+    static final String BASE_URL = "https://rickandmortyapi.com/api/";
+
+    @GET("character")
     Call< List<Character> > getAllCharacters();
 
-    //Possiblement no faci falta
-    @GET("/character/{Id}")
+    //Most likely unnecessary
+    @GET("character/{Id}")
     Call<Character> getCharacterById(@Path("Id") int id);
 
 
