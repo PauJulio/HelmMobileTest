@@ -1,5 +1,6 @@
 package example.pau.rickmorty;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,10 +17,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CharacterSelector extends AppCompatActivity {
+public class CharacterSelector extends AppCompatActivity implements CharacterAdapter.ClickListener {
 
     private CharacterAdapter characterAdapter;
     private ArrayList<Character> characters = new ArrayList<>();
+    private ArrayList<Boolean> likes;
     private static final String BASE_URL = "https://rickandmortyapi.com/api/";
 
 
@@ -33,7 +35,7 @@ public class CharacterSelector extends AppCompatActivity {
 
     private void recycleInit(){
         RecyclerView recycleView = findViewById(R.id.recycleView);
-        characterAdapter = new CharacterAdapter(this, characters);
+        characterAdapter = new CharacterAdapter(this, characters, this);
         recycleView.setAdapter(characterAdapter);
         recycleView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -50,6 +52,7 @@ public class CharacterSelector extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResultsFromAPI> call, Response<ResultsFromAPI> response) {
                 characters = response.body().getCharacters();
+                likes = new ArrayList<>(characters.size());
                 recycleInit();
             }
 
@@ -60,5 +63,16 @@ public class CharacterSelector extends AppCompatActivity {
         });
     }
 
-
+    @Override
+    public void onClick(int position) {
+        Intent intent = new Intent(this, CharacterSpecificActivity.class);
+        intent.putExtra("chName", characters.get(position).getChName());
+        intent.putExtra("chStatus", characters.get(position).getChStatus());
+        intent.putExtra("chSpecies", characters.get(position).getChSpecies());
+        intent.putExtra("chType", characters.get(position).getChType());
+        intent.putExtra("chGender", characters.get(position).getChGender());
+        intent.putExtra("chImage", characters.get(position).getChImage());
+        //intent.putExtra("like", likes.get(position));
+        startActivity(intent);
+    }
 }
