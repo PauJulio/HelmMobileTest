@@ -15,14 +15,13 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.ViewHolder> {
-    private static final String TAG = "CharacterAdapter";
 
     private Context chContext;
     private ArrayList<Character> characters;
 
     public CharacterAdapter(Context chContext, ArrayList<Character> characters) {
         this.chContext = chContext;
-        this.characters = new ArrayList<Character>(characters);
+        this.characters = new ArrayList<>(characters);
     }
 
 

@@ -1,7 +1,6 @@
 package example.pau.rickmorty;
 
 
-import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -11,7 +10,7 @@ public interface ConectorInterface {
     static final String BASE_URL = "https://rickandmortyapi.com/api/";
 
     @GET("character")
-    Call< List<Character> > getAllCharacters();
+    Call< ResultsFromAPI > getAllCharacters();
 
     //Most likely unnecessary
     @GET("character/{Id}")
