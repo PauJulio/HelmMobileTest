@@ -16,6 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CharacterSpecificActivity" />
     </application>
 //Internet per consumir l'API--------------------------------------
     <uses-permission android:name="android.permission.INTERNET" />
