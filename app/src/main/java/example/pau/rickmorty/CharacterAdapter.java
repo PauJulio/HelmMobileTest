@@ -1,7 +1,6 @@
 package example.pau.rickmorty;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,14 +18,15 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
     private Context chContext;
     private ArrayList<Character> characters;
+    private ArrayList<Boolean> likes;
     private ClickListener clickListener;
 
-    public CharacterAdapter(Context chContext, ArrayList<Character> characters, ClickListener clickListener) {
+    public CharacterAdapter(Context chContext, ArrayList<Character> characters, ArrayList<Boolean> likes, ClickListener clickListener) {
         this.chContext = chContext;
-        this.characters = new ArrayList<>(characters);
+        this.characters = characters;
+        this.likes = new ArrayList<>(likes);
         this.clickListener = clickListener;
     }
-
 
     @Override
     public CharacterAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -40,6 +40,11 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
     public void onBindViewHolder(@NonNull CharacterAdapter.ViewHolder viewHolder, final int position) {
         Glide.with(chContext).asBitmap().load(characters.get(position).getChImage()).into(viewHolder.chImage);
         viewHolder.chName.setText(characters.get(position).getChName());
+        if (likes.get(position)){
+            viewHolder.like.setImageResource(R.drawable.ic_action_unlike);
+        } else {
+            viewHolder.like.setImageResource(R.drawable.ic_action_like);
+        }
 
     }
 
@@ -52,6 +57,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
         ImageView chImage;
         TextView chName;
+        ImageView like;
         RelativeLayout parentLayout;
         ClickListener clickListener;
 
@@ -59,6 +65,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
             super(itemView);
             chImage = itemView.findViewById(R.id.chImage);
             chName = itemView.findViewById(R.id.chName);
+            like = itemView.findViewById(R.id.generalLike);
             parentLayout = itemView.findViewById(R.id.parent_layout);
             this.clickListener = clickListener;
             itemView.setOnClickListener(this);
@@ -73,6 +80,12 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
     public interface ClickListener{
         void onClick (int position);
     }
+
+    public void checkLike(int position, boolean value){
+        likes.set(position, value);
+        notifyItemChanged(position);
+    }
+
 
 
 }

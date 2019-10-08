@@ -1,15 +1,14 @@
 package example.pau.rickmorty;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,8 +20,9 @@ public class CharacterSelector extends AppCompatActivity implements CharacterAda
 
     private CharacterAdapter characterAdapter;
     private ArrayList<Character> characters = new ArrayList<>();
-    private ArrayList<Boolean> likes;
+    private ArrayList<Boolean> likes = new ArrayList<>();
     private static final String BASE_URL = "https://rickandmortyapi.com/api/";
+    private static int SPECIFIC_CHARACTER_ACTIVITY = 1;
 
 
     @Override
@@ -35,7 +35,7 @@ public class CharacterSelector extends AppCompatActivity implements CharacterAda
 
     private void recycleInit(){
         RecyclerView recycleView = findViewById(R.id.recycleView);
-        characterAdapter = new CharacterAdapter(this, characters, this);
+        characterAdapter = new CharacterAdapter(this, characters, likes, this);
         recycleView.setAdapter(characterAdapter);
         recycleView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -52,7 +52,7 @@ public class CharacterSelector extends AppCompatActivity implements CharacterAda
             @Override
             public void onResponse(Call<ResultsFromAPI> call, Response<ResultsFromAPI> response) {
                 characters = response.body().getCharacters();
-                likes = new ArrayList<>(characters.size());
+                for(int position = 0; position < characters.size(); ++position) likes.add(false);
                 recycleInit();
             }
 
@@ -66,13 +66,26 @@ public class CharacterSelector extends AppCompatActivity implements CharacterAda
     @Override
     public void onClick(int position) {
         Intent intent = new Intent(this, CharacterSpecificActivity.class);
+        intent.putExtra("position", position);
         intent.putExtra("chName", characters.get(position).getChName());
         intent.putExtra("chStatus", characters.get(position).getChStatus());
         intent.putExtra("chSpecies", characters.get(position).getChSpecies());
         intent.putExtra("chType", characters.get(position).getChType());
         intent.putExtra("chGender", characters.get(position).getChGender());
         intent.putExtra("chImage", characters.get(position).getChImage());
-        //intent.putExtra("like", likes.get(position));
-        startActivity(intent);
+        intent.putExtra("like", likes.get(position));
+        startActivityForResult(intent, SPECIFIC_CHARACTER_ACTIVITY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == SPECIFIC_CHARACTER_ACTIVITY){
+            if (resultCode == RESULT_OK){
+                characterAdapter.checkLike(data.getExtras().getInt("position"), true);
+            } else{
+                characterAdapter.checkLike(data.getExtras().getInt("position"), false);
+            }
+        }
+
     }
 }
