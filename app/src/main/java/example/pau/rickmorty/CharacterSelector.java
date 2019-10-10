@@ -81,8 +81,10 @@ public class CharacterSelector extends AppCompatActivity implements CharacterAda
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == SPECIFIC_CHARACTER_ACTIVITY){
             if (resultCode == RESULT_OK){
+                likes.set(data.getExtras().getInt("position"), true);
                 characterAdapter.checkLike(data.getExtras().getInt("position"), true);
             } else{
+                likes.set(data.getExtras().getInt("position"), false);
                 characterAdapter.checkLike(data.getExtras().getInt("position"), false);
             }
         }
